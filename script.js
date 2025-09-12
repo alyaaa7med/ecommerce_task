@@ -43,19 +43,25 @@ async function getAllProd() {
                     div.innerHTML = `
                     <h3>${prod.title}</h3>
                     <div id = "${prod.id}">$${prod.price}&nbsp; *  <button  class = "operation"> &nbsp;+&nbsp; </button>                
-                    ${prod.item_counter} <button  class = "operation"> &nbsp;-&nbsp; </button> 
+                    ${prod.item_counter} <button  class = "operation"> &nbsp;-&nbsp; </button> = ${prod.price}
                     </div>`
                     cartPage.document.body.appendChild(div)}
 
                 else { // update 
                     prod.item_counter++;
+
                     const existingItem = cartPage.document.getElementById(prod.id);
+                    if (!existingItem) {//
+                    console.warn("div of Cart-item disappeared or was never appended!");
+                    }
+                    else {
                     existingItem.innerHTML = `
-                    $${(prod.price * prod.item_counter).toFixed(2)}&nbsp; *  
+                    $${prod.price}&nbsp; *  
                     <button class="operation"> &nbsp;+&nbsp; </button>                
                     ${prod.item_counter} 
-                    <button class="operation"> &nbsp;-&nbsp; </button> `;
+                    <button class="operation"> &nbsp;-&nbsp; </button> = ${(prod.price * prod.item_counter).toFixed(2)} `;
                 }
+            }
                 
             })
         })  
