@@ -87,10 +87,7 @@ async function getAllProd() {
                 }
 
                 updatePurchaseButton(cartPage)
-                  const backBtn = document.querySelector(".back");
-    backBtn.addEventListener("click", () => {
-        window.close(); // closes the cart page
-    });
+                bindBackButton(cartPage);
 
             })  
         })  
@@ -112,6 +109,19 @@ function wait_page_load(){
         },10)
     })
 }
+function bindBackButton(cartPage) {
+    const interval = setInterval(() => {
+        const backBtn = cartPage.document.querySelector(".back");
+        if (backBtn && !backBtn.dataset.bound) {
+            backBtn.dataset.bound = "true";
+            backBtn.addEventListener("click", () => {
+                cartPage.close(); // closes cart.html popup
+            });
+            clearInterval(interval); // stop polling
+        }
+    }, 10); // check every 10ms
+}
+
 
 function change_cart_item_price(prod , div_name){ 
     const existingItem = cartPage.document.getElementById(div_name);
