@@ -42,27 +42,41 @@ async function getAllProd() {
                     div.className = "cart-item"
                     div.innerHTML = `
                     <h3>${prod.title}</h3>
-                    <div id = "${prod.id}">$${prod.price}&nbsp; *  <button  class = "operation"> &nbsp;+&nbsp; </button>                
-                    ${prod.item_counter} <button  class = "operation"> &nbsp;-&nbsp; </button> = ${prod.price}
-                    </div>`
-                    cartPage.document.body.appendChild(div)}
+
+                    <div id="${prod.id}" class="details">$${prod.price} *  
+                    <button class="operationA"> + </button>                
+                    <span class="count">${prod.item_counter}</span> 
+                    <button class="operationS"> - </button> 
+                    = <span class="total">$${prod.price}</span>
+                    </div> 
+                    <button  class = "remove">Remove</button>`
+                    cartPage.document.body.appendChild(div)
+                    
+                    const removebtn = div.querySelector(".remove");
+                    removebtn.addEventListener("click", () => { //it also works for else once created it fires at any where 
+                    div.remove();                  // remove from DOM
+                    prod.item_counter = 0;         // reset counter
+                    });
+
+                    const addbtn = div.querySelector(".operationA")
+                    addbtn.addEventListener("click",()=>{
+                    prod.item_counter++
+                    change_cart_item_price(prod,prod.id)
+                    })
+
+                    const subbtn = div.querySelector(".operationS")
+                    subbtn.addEventListener("click",()=>{
+                    prod.item_counter--
+                    change_cart_item_price(prod,prod.id)
+                    })
+
+                }
 
                 else { // update 
                     prod.item_counter++;
-
-                    const existingItem = cartPage.document.getElementById(prod.id);
-                    if (!existingItem) {//
-                    console.warn("div of Cart-item disappeared or was never appended!");
-                    }
-                    else {
-                    existingItem.innerHTML = `
-                    $${prod.price}&nbsp; *  
-                    <button class="operation"> &nbsp;+&nbsp; </button>                
-                    ${prod.item_counter} 
-                    <button class="operation"> &nbsp;-&nbsp; </button> = ${(prod.price * prod.item_counter).toFixed(2)} `;
+                    change_cart_item_price(prod,prod.id) 
                 }
-            }
-                
+            
             })
         })  
     })  
@@ -85,5 +99,14 @@ function wait_page_load(){
         })
 }
 
+function change_cart_item_price(prod , div_name){ 
+    const existingItem = cartPage.document.getElementById(div_name);
+    if(existingItem) {
+        existingItem.querySelector(".count").textContent = prod.item_counter;
+        existingItem.querySelector(".total").textContent = 
+            "$" + (prod.price * prod.item_counter).toFixed(2);
+    }}
+
 getAllProd();
+
 
